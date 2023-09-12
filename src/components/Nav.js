@@ -42,7 +42,7 @@ const NavSubmenu = styled.ul`
   transition: 0.5s;
   flex-wrap: wrap;
   text-align: center;
-  height: 0;
+  height: ${({$isopen, $height}) => ($isopen === "true" ? $height : "0px")};
   overflow: hidden;
   li{
     flex-basis: 100% !important;
@@ -50,9 +50,6 @@ const NavSubmenu = styled.ul`
     a{
       color: #fff;
     }
-  }
-  &.on{
-    height: auto;
   }
 `
 const NavMember = styled.div`
@@ -63,14 +60,13 @@ const NavMember = styled.div`
 
 
 function Nav() {
-
+  const [isHeight, setIsHeight] = useState();
   const SubMenuHeight = (e)=>{
     const list = document.querySelectorAll(".sub_list")[e];
     const listLength = list.querySelectorAll("li").length;
     const value = listLength * 43+"px";
-    console.log(value);
 
-    return value;
+    return setIsHeight(value);
 
   }
 
@@ -144,7 +140,7 @@ function Nav() {
                       setIsActive(-1);
                     }} 
                     key={i}><NavLink to={e.link}>{e.title}</NavLink>
-                      <NavSubmenu className={`sub_list ${isActive === i ? 'on':''}`}>
+                      <NavSubmenu className={`sub_list`} $isopen={isActive === i ? "true" : "false"} $height={isHeight}>
                         {
                           SubMenu[i].map((el,index)=>{
                             return (

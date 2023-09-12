@@ -5,6 +5,8 @@ import Aside from "./components/Aside";
 import { ThemeProvider } from "styled-components";
 import { useState } from "react";
 import Nav from "./components/Nav";
+import store from "./store";
+import { Provider } from "react-redux";
 
 function App() {
 
@@ -38,6 +40,7 @@ function App() {
 
   return (
     <>
+    <Provider store={store}>
       <ThemeProvider theme={DarkMode}>
         <GlobalStyle/>
         <Aside ThemeSelect={ThemeSelect} themeConfig={themeConfig}/>
@@ -46,6 +49,7 @@ function App() {
           <Route path="/" element={<Main/>}></Route>
         </Routes>
       </ThemeProvider>
+    </Provider>
     </>
   );
 }

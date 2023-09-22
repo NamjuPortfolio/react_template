@@ -8,7 +8,6 @@ import store, { logIn, loggedIn } from "./store";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import Member from "./pages/Member";
 import Login from "./pages/Login";
-import Example from "./example/Example";
 import Logout from "./pages/Logout";
 import { useEffect } from "react";
 import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
@@ -20,6 +19,8 @@ import Notice from "./pages/service/Notice";
 import Online from "./pages/service/Online";
 import Qna from "./pages/service/Qna";
 import Gallery from "./pages/service/Gallery";
+import View from "./pages/View";
+import NotPage from "./pages/NotPage";
 function App() {
 
   
@@ -57,25 +58,24 @@ function Inner(){
   }
   const theme = useSelector(state => state.dark);
   const DarkMode = theme === 'light' ? light : dark;
-  const userState = useSelector(state => state.user);
-  console.log(userState)
-
+  
   const dispatch = useDispatch();
+  const userState = useSelector(state => state.user);
   const uid = sessionStorage.getItem("users");
-  if(uid){
-    dispatch(logIn(uid));
-  }
-
+  
+  
   useEffect(()=>{
+    if(uid){
+      dispatch(logIn(uid));
+
+    }
     const fetchUser = async () =>{
       if(!uid) return;
 
       const userDoc = doc(collection(getFirestore(), "users"), uid);
-      console.log(userDoc)
 
       try{
         const docSnapshot = await getDoc(userDoc);
-        console.log(docSnapshot)
         if(docSnapshot.exists()){
           const userData = docSnapshot.data();
           dispatch(loggedIn(userData))
@@ -92,6 +92,7 @@ function Inner(){
   }, [dispatch, uid])
 
 
+
  return (
   <ThemeProvider theme={DarkMode}>
 
@@ -100,20 +101,24 @@ function Inner(){
     <Nav userState={userState} />
     <Routes>
       <Route path="/" element={<Main/>}></Route>
-      {/* <Route path="/" element={<Example/>}></Route> */}
       <Route path="/member" element={<Member/>}></Route>
       <Route path="/login" element={<Login/>}></Route>
       <Route path="/logout" element={<Logout/>}></Route>
-      <Route path="/modify" element={<Modify/>}></Route>
+      <Route path="/modify" element={<Member/>}></Route>
       <Route path="/findemail" element={<FindEmail/>}></Route>
       <Route path="/write/:board" element={<Write/>}></Route>
+      <Route path="/view/:board/:view" element={<View/>}></Route>
+      
+      <Route path="/edit/:board/:view" element={<Write/>}></Route>
       
       <Route path="/service" element={<Service />}>
+        
         <Route path="notice" element={<Notice />}></Route>
         <Route path="online" element={<Online />}></Route>
         <Route path="qna" element={<Qna />}></Route>
         <Route path="gallery" element={<Gallery />}></Route>
       </Route>
+      <Route path="/*" element={<NotPage/>}></Route>
     </Routes>
   </ThemeProvider>
  )
